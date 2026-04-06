@@ -1,25 +1,30 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet , Image} from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-// 1. Create the Stack manager
 const Stack = createStackNavigator();
 
 // --- SCREEN 1: HOME ---
 const HomeScreen = ({ navigation }: { navigation: any }) => {
   return (
     <View style={styles.center}>
-      <Image 
-        source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }} 
-        style={styles.profilePic} 
-      />
-      <Text style={styles.title}>Home Screen</Text>
-      <Button 
-        title="Go to Details" 
-        onPress={() => navigation.navigate('Details')} 
-        // onPress={() => navigation.navigate('About React-Native')} 
-      />
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.card}>
+        <Image 
+          source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }} 
+          style={styles.profilePic} 
+        />
+        <Text style={styles.title}>Welcome Debasish</Text>
+        <Text style={styles.subtitle}>Explore the power of Native UI</Text>
+        
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate('Details')}
+        >
+          <Text style={styles.buttonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -27,60 +32,141 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
 // --- SCREEN 2: DETAILS ---
 const DetailsScreen = ({ navigation }: { navigation: any }) => {
   return (
-    <View style={styles.container}>
-    <View style={styles.center}>
-      <Text style={styles.title}>React-Native Multi Page</Text>
-      <Text style={styles.data}> A multi-page home screen in React Native is typically designed to present different sets of content or features across multiple swipeable or navigable views, improving user experience by avoiding clutter on a single screen. This is commonly implemented using navigation libraries like React Navigation or components such as pagers and tab views (e.g., react-native-tab-view). Each “page” can represent a distinct section—like dashboard, notifications, or recommendations—while sharing a consistent layout and state management. Data for these pages is usually fetched from APIs or local storage and managed using state tools like Context API or Redux, ensuring smooth transitions and real-time updates. By structuring the home screen into multiple pages, developers can create a more organized, scalable, and performance-friendly interface that enhances usability, especially in apps with large amounts of dynamic content.</Text>
-      <Button title="Go Back" onPress={() => navigation.goBack()} />
-    </View>
-    </View>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.header}>
+        <Text style={styles.detailTitle}>React Native Multi-Page</Text>
+      </View>
+      
+      <View style={styles.contentBody}>
+        <Text style={styles.dataText}>
+          A multi-page home screen in React Native is typically designed to present different sets of content or features across multiple swipeable or navigable views, improving user experience by avoiding clutter on a single screen.
+        </Text>
+        <Text style={styles.dataText}>
+          Each “page” can represent a distinct section—like a dashboard or recommendations—while sharing a consistent layout. Data is usually fetched from APIs, ensuring smooth transitions and real-time updates.
+        </Text>
+      </View>
+
+      <TouchableOpacity 
+        style={styles.secondaryButton} 
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.secondaryButtonText}>Go Back</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
-// --- MAIN APP COMPONENT ---
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Navigator 
+        screenOptions={{
+          headerStyle: { elevation: 0, shadowOpacity: 0, backgroundColor: '#f8f9fa' },
+          headerTitleStyle: { fontWeight: 'bold' }
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Details" component={DetailsScreen} options={{ title: 'Article' }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-
+  // General Layout
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f0f2f5',
   },
-
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',  // 🔥 spreads content vertically
-    padding: 20
+  scrollContainer: {
+    padding: 24,
+    backgroundColor: '#fff',
+    flexGrow: 1,
   },
-
+  // Home Screen Components
+  card: {
+    backgroundColor: '#fff',
+    padding: 40,
+    borderRadius: 30,
+    alignItems: 'center',
+    width: '85%',
+    // Shadow for iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    // Elevation for Android
+    elevation: 5,
+  },
   profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     marginBottom: 20,
+    borderWidth: 4,
+    borderColor: '#e1e4e8',
   },
-
   title: {
-    fontSize: 24,
-    marginBottom: 20,
-
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#1a1a1a',
+    marginBottom: 8,
   },
-  data: {
-    fontSize:15,
-    marginBottom: 40,
-    alignContent: 'center',
-    marginLeft: 10,
-    marginRight: 10,
-    justifyContent: 'center'
-  }
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  // Buttons
+  primaryButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 15,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    marginTop: 20,
+    padding: 15,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#007AFF',
+    borderRadius: 15,
+  },
+  secondaryButtonText: {
+    color: '#007AFF',
+    fontWeight: '600',
+  },
+  // Details Screen Components
+  header: {
+    marginBottom: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingBottom: 15,
+  },
+  detailTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    lineHeight: 40,
+  },
+  contentBody: {
+    marginBottom: 30,
+  },
+  dataText: {
+    fontSize: 17,
+    lineHeight: 26,
+    color: '#444',
+    marginBottom: 15,
+    textAlign: 'left',
+  },
 });
