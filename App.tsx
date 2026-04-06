@@ -1,9 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import { Linking , Alert} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+
 const Stack = createStackNavigator();
+
+
+
+// Helper Funcion
+const openLink = async (url: string) => {
+  const supported = await Linking.canOpenURL(url);
+
+  if (supported) {
+    await Linking.openURL(url);
+  }
+  else{
+    Alert.alert(`Don't know how to open this URL: ${url}`)
+  }
+}
+
+
+
 
 // --- SCREEN 1: HOME ---
 const HomeScreen = ({ navigation }: { navigation: any }) => {
@@ -44,7 +63,28 @@ const DetailsScreen = ({ navigation }: { navigation: any }) => {
         <Text style={styles.dataText}>
           Each “page” can represent a distinct section—like a dashboard or recommendations—while sharing a consistent layout. Data is usually fetched from APIs, ensuring smooth transitions and real-time updates.
         </Text>
+
+        <Text style={styles.dataText}>
+          To master React Native, you should check out the official 
+          {/* Inline Link Example */}
+          <Text 
+            style={styles.hyperlink} 
+            onPress={() => openLink('https://github.com/debasishray16/React-Native/blob/stack-Navigation/App.tsx')}
+          >
+            {" "}Documentation.
+          </Text>
+        </Text>
       </View>
+
+
+      {/* Button Link Example */}
+      <TouchableOpacity 
+        style={styles.linkButton} 
+        onPress={() => openLink('https://github.com/facebook/react-native')}
+      >
+        <Text style={styles.linkButtonText}>Visit GitHub Repo</Text>
+      </TouchableOpacity>
+
 
       <TouchableOpacity 
         style={styles.secondaryButton} 
@@ -168,5 +208,22 @@ const styles = StyleSheet.create({
     color: '#444',
     marginBottom: 15,
     textAlign: 'left',
+  },
+
+  hyperlink: {
+    color: '#007AFF',
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
+  linkButton: {
+    backgroundColor: '#333', // GitHub dark style
+    padding: 15,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  linkButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
